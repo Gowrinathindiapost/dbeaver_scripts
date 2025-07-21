@@ -1,0 +1,1 @@
+select * from carriermgmt.schedule where schedule_id=1898

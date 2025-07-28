@@ -218,3 +218,74 @@ FROM
     trip_data
 ORDER BY 
     mapping_id DESC;
+
+    --------------------below working
+    WITH trip_data AS (
+    SELECT 
+    svdm.schedule_id,
+	svdm.schedule_name,
+vehicle_reg_number,
+        mapping_id,
+        trip_start_date,
+        trip_end_date,
+        (trip_start_date::timestamp + trip_start_time) AS trip_start_ts,
+        (trip_end_date::timestamp + trip_end_time) AS trip_end_ts,
+        (trip_end_date::timestamp + trip_end_time) - (trip_start_date::timestamp + trip_start_time) AS duration,
+
+        -- Calculate night hours (10PM-6AM)
+        (
+            -- Hours from midnight to 6AM at trip start
+            CASE WHEN (trip_start_date::timestamp + trip_start_time)::time < '06:00:00'::time 
+                 THEN EXTRACT(EPOCH FROM (
+                      LEAST(trip_start_date::timestamp + INTERVAL '06:00:00', (trip_end_date::timestamp + trip_end_time)) - 
+                      (trip_start_date::timestamp + trip_start_time)))
+                 ELSE 0 
+            END
+            +
+            -- Hours from 10PM to midnight at trip start
+            CASE WHEN (trip_start_date::timestamp + trip_start_time)::time >= '22:00:00'::time 
+                 THEN EXTRACT(EPOCH FROM (
+                      LEAST(trip_start_date::timestamp + INTERVAL '1 day', (trip_end_date::timestamp + trip_end_time)) - 
+                      (trip_start_date::timestamp + trip_start_time)))
+                 ELSE 0 
+            END
+            +
+            -- Hours from midnight to 6AM at trip end
+            CASE WHEN (trip_end_date::timestamp + trip_end_time)::time < '06:00:00'::time 
+                 THEN EXTRACT(EPOCH FROM (
+                      (trip_end_date::timestamp + trip_end_time) - 
+                      GREATEST(trip_end_date::timestamp, (trip_start_date::timestamp + trip_start_time))))
+                 ELSE 0 
+            END
+            +
+            -- Hours from 10PM to midnight at trip end
+            CASE WHEN (trip_end_date::timestamp + trip_end_time)::time >= '22:00:00'::time 
+                 THEN EXTRACT(EPOCH FROM (
+                      (trip_end_date::timestamp + trip_end_time) - 
+                      GREATEST(trip_end_date::timestamp + INTERVAL '22:00:00', (trip_start_date::timestamp + trip_start_time))))
+                 ELSE 0 
+            END
+        ) / 3600 * INTERVAL '1 hour' AS night_hours
+
+    FROM carriermgmt.schedule_vehicle_driver_mapping svdm 
+    WHERE 
+        (svdm.driving_license_number_prim = 'TA0920224567899' 
+         OR svdm.driving_license_number_sec = 'TA0920224567899')
+        AND trip_start_date = '2024-03-13'::date
+)
+
+SELECT 
+	schedule_id,
+	schedule_name,
+vehicle_reg_number,
+    mapping_id,    
+    trip_start_date,
+    trip_end_date,
+    trip_start_ts AS trip_start_time,
+    trip_end_ts AS trip_end_time,
+    duration,
+    GREATEST(night_hours, INTERVAL '0') AS night_hours,
+    ROUND(EXTRACT(EPOCH FROM GREATEST(night_hours, INTERVAL '0')) / 3600 * 10, 2) AS night_coefficient_minutes,
+    duration + (ROUND(EXTRACT(EPOCH FROM GREATEST(night_hours, INTERVAL '0')) / 3600 * 10) * INTERVAL '1 minute') AS total_duration_with_coefficient
+FROM trip_data
+ORDER BY mapping_id DESC;

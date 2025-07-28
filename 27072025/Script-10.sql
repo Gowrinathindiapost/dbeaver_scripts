@@ -1,0 +1,1 @@
+ SELECT true AS exists FROM carriermgmt.driver WHERE aadhaar_number = $1 order by created_date desc LIMIT 1

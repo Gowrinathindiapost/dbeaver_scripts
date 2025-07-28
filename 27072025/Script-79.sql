@@ -1,0 +1,1 @@
+select * from sortmgmt.dmsl where office_of_closing='11660590'

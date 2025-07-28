@@ -1,0 +1,1 @@
+SELECT  last_maintenance_reading FROM carriermgmt.vehicle_maintenance WHERE vehicle_reg_number = $1 ORDER BY vehicle_maintenance_id DESC LIMIT 1

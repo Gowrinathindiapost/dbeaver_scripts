@@ -1,0 +1,1 @@
+select schedule_id,schedule_status from carriermgmt.schedule where schedule_id='202709'

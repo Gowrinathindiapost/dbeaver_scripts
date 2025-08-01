@@ -1,0 +1,1 @@
+select * from sortmgmt.mail_office_hierarchy_master where mail_office_id='21380010'

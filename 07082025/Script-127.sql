@@ -1,0 +1,1 @@
+select * from mis_db.new_customer_xml_facility_customer_mv ncxfcm where bulk_customer_id =2000008005

@@ -1,0 +1,1 @@
+select * from rolemgmt.post_management_master pmm where designation ilike '%mail%'  office_id='29300001' and post_name ilike '%ails%' office_name ILIKE '%amilnad%'

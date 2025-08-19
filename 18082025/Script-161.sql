@@ -1,0 +1,89 @@
+SELECT
+    t1.article_number,
+    t1.event_time AS event_date,
+    t2.event_name AS event_type,
+    CASE t1.event_cd
+        WHEN 1 THEN 'ITEM_BOOK'
+        WHEN 2 THEN 'ITEM_DESPATCH'
+        WHEN 3 THEN 'ITEM_RECEIVE'
+        WHEN 4 THEN 'CUSTOM_RECEIVE'
+        WHEN 5 THEN 'ITEM_RECEIVE'
+        WHEN 6 THEN 'CUSTOM_REMARKS'
+        WHEN 7 THEN 'CUSTOM_RETURN'
+        WHEN 8 THEN 'ITEM_DESPATCH'
+        WHEN 9 THEN 'BAG_CHANGE'
+        WHEN 12 THEN 'ITEM_DESPATCH'
+        WHEN 13 THEN 'ITEM_BAGGED'
+        WHEN 14 THEN 'BAG_CHANGE'
+        WHEN 15 THEN 'CANCEL_EXPORT'
+        WHEN 30 THEN 'ITEM_RECEIVE'
+        WHEN 31 THEN 'CUSTOM_RECEIVE'
+        WHEN 32 THEN 'ITEM_RECEIVE'
+        WHEN 33 THEN 'ITEM_RECEIVE'
+        WHEN 34 THEN 'CUSTOM_REMARKS'
+        WHEN 35 THEN 'ITEM_DESPATCH'
+        WHEN 36 THEN 'ITEM_NONDELIVER'
+        WHEN 37 THEN 'ITEM_DELIVER'
+        WHEN 38 THEN 'CUSTOM_RETURN'
+        WHEN 39 THEN 'ITEM_INVOICE'
+        WHEN 40 THEN 'ITEM_RECEIVE'
+        WHEN 60 THEN 'ITEM_UPDATE'
+        WHEN 61 THEN 'ITEM_UPDATE'
+        WHEN 69 THEN 'ITEM_HOLD'
+        WHEN 70 THEN 'ITEM_HOLD'
+        WHEN 71 THEN 'ITEM_RECEIVE'
+        WHEN 72 THEN 'ITEM_DESPATCH'
+        WHEN 73 THEN 'ITEM_HOLD'
+        WHEN 74 THEN 'ITEM_DESPATCH'
+        WHEN 75 THEN 'ITEM_DELIVER'
+        WHEN 76 THEN 'STOP_IMPORT'
+        WHEN 77 THEN 'BAG_CHANGE'
+        WHEN 78 THEN 'ITEM_COLLECT'
+        WHEN 79 THEN 'INFO_UPDATE'
+        WHEN 100 THEN 'CREATE_BAG'
+        WHEN 101 THEN 'CLOSE_BAG'
+        WHEN 102 THEN 'REOPEN_BAG'
+        WHEN 103 THEN 'BAG_DESPATCH'
+        WHEN 104 THEN 'BAG_RECEIVE'
+        WHEN 105 THEN 'BAG_CHANGE'
+        WHEN 106 THEN 'BAG_DESPATCH'
+        WHEN 107 THEN 'BAG_DESPATCH'
+        WHEN 108 THEN 'BAG_DESPATCH'
+        WHEN 130 THEN 'BAG_RECEIVE'
+        WHEN 131 THEN 'BAG_OPEN'
+        WHEN 132 THEN 'BAG_DESPATCH'
+        WHEN 133 THEN 'BAG_RECEIVE'
+        WHEN 134 THEN 'BAG_RECEIVE'
+        WHEN 135 THEN 'BAG_RECEIVE'
+        WHEN 160 THEN 'BAG_DELETE'
+        WHEN 161 THEN 'CARRIER_HANDLE'
+        WHEN 169 THEN 'BAG_UPDATE'
+        WHEN 170 THEN 'BAG_UPDATE'
+        WHEN 171 THEN 'BAG_RECTIFY'
+        WHEN 172 THEN 'BAG_RECTIFY'
+        WHEN 176 THEN 'CHANGE_BAG'
+        WHEN 177 THEN 'CHANGE_BAG'
+        WHEN 200 THEN 'CREATE_DISPATCH'
+        WHEN 201 THEN 'CLOSE_DISPATCH'
+        WHEN 202 THEN 'REOPEN_DISPATCH'
+        WHEN 203 THEN 'DESPATCH_CHANGE'
+        WHEN 1116 THEN 'TRANSFER_OOE'
+        WHEN 1117 THEN 'TRANSFER_OOE'
+        WHEN 1118 THEN 'ITEM_RECEIVE'
+        WHEN 1250 THEN 'ITEM_DELIVER'
+        WHEN 1251 THEN 'BAG_DISPATCH'
+        ELSE t2.event_name
+    END AS event_code,
+
+    
+    '99999999' AS office_id,
+    t3.ooe_name AS office_name,
+    'ext_ips_ips_event' AS source_table,
+    '' AS delivery_status,
+    8 AS sort_order
+
+FROM mis_db.ext_ips_ips_event AS t1
+INNER JOIN mis_db.ext_ips_ips_event_master AS t2 
+    ON t1.event_cd = t2.event_cd
+INNER JOIN mis_db.dim_ips_ooe_master AS t3 
+    ON t1.office_cd = t3.ooe_fcd;

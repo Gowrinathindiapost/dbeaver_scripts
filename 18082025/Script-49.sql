@@ -1,0 +1,1 @@
+GRANT INSERT, UPDATE, SELECT, DELETE ON TABLE bagmgmt.kafka_employee_master TO bagmgmt_rw;

@@ -1,0 +1,1 @@
+ALTER TYPE carriermgmt."vehicle_trip_status_enum" ADD VALUE 'END';

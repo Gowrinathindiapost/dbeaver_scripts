@@ -1,0 +1,1 @@
+select * from bagmgmt.bag_close_content where article_number='CPX0000000113'

@@ -1,0 +1,1 @@
+select * from carriermgmt.vehicle_maintenance where vehicle_reg_number='NK01KA0999'

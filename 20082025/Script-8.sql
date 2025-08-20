@@ -1,0 +1,1 @@
+select * from carriermgmt.driver where driving_license_number=null

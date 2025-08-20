@@ -1,0 +1,1 @@
+select max(article_event_id) from kafka_article_event
